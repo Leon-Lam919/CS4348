@@ -22,7 +22,15 @@ public class Project2 {
         Thread bell2 = new Thread(bellhop2);
         bell1.start();
         bell2.start();
-        
+
+        Thread guest[] = new Thread[5];
+        for (int i = 0; i < 5; i++){
+            guest[i] = new Thread(new guests(i));
+        }
+
+        for (int i = 0; i < 5; i++){
+            guest[i].start();
+        }
 
         // try catch block to check for errors
         try {
@@ -30,6 +38,10 @@ public class Project2 {
             frontThread2.join();
             bell1.join();
             bell2.join();
+            for (int i = 0; i< 5; i++){
+                guest[i].join();
+            }
+
         } catch (Exception e) {
             System.err.print("Thread not working");
         }
@@ -65,6 +77,20 @@ public class Project2 {
         @Override
         public void run(){
             System.out.println("Bellhop " + id + " created.");
+        }
+    }
+
+    //guest thread
+    public static class guests implements Runnable{
+        private int id;
+
+        public guests(int id){
+            this.id = id;
+        }
+
+        @Override
+        public void run(){
+            System.out.println("Guest " + id + " created.");
         }
     }
 }
