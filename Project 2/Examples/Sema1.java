@@ -15,13 +15,13 @@ import java.util.concurrent.Semaphore;
 
 
 
-public class Sem1 implements Runnable
+public class Sema1 implements Runnable
 {
    private int num;
    private static Semaphore sem = new Semaphore( 0, true );
 
 
-   Sem1( int num ) 
+   Sema1( int num ) 
    {
       this.num = num;
    }
@@ -49,13 +49,13 @@ public class Sem1 implements Runnable
       int i=0;
       final int NUMTHREADS = 10;
 
-      Sem1 thr[] = new Sem1[NUMTHREADS];
+      Sema1 thr[] = new Sema1[NUMTHREADS];
       Thread myThread[] = new Thread[NUMTHREADS];
 
       // create threads
       for( i = 0; i < NUMTHREADS; ++i ) 
       {
-	 thr[i] = new Sem1(i);
+	      thr[i] = new Sema1(i);
          myThread[i] = new Thread( thr[i] );
          myThread[i].start();
       }
