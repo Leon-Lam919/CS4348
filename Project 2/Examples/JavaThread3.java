@@ -1,3 +1,5 @@
+package Examples;
+
 
 // Greg Ozbirn, University of Texas at Dallas, 2007
 // Java version of matrix multiply 

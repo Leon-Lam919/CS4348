@@ -1,16 +1,20 @@
+package Examples;
 
+// implements Runnable to create thread
 public class JavaThread1 implements Runnable
 {
    private String message;
   
+   // first thread
    JavaThread1( String msg )
    {
       message = msg;
    }
 
+   // function will take in the message and run the code
    public void run()
    {
-      System.out.println(message);
+      System.out.print(message);
    }
 
    public static void main(String args[])
