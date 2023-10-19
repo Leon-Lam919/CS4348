@@ -3,31 +3,26 @@ import java.util.concurrent.Semaphore;
 
 public class Project2 {
     // all semaphores
-    private static Semaphore front_desk_employee[] = {new Semaphore(0, true), new Semaphore(0, true)};
-    private static Semaphore bellhop[] = {new Semaphore(0, true), new Semaphore(0, true)};
+    private static Semaphore front_desk_employee[] = {new Semaphore(1), new Semaphore(1)};
+    private static Semaphore bellhop[] = {new Semaphore(0), new Semaphore(0)};
+    private static Semaphore guestSemaphore[] = {new Semaphore(0), new Semaphore(0)};
     public static void main(String[] args) {
         System.out.println("Simulation starts");
 
         // runs front desk threads
         front_desk front_desk_employee_1 = new front_desk(1);
-        front_desk front_desk_employee_2 = new front_desk(2);
         Thread frontThread = new Thread(front_desk_employee_1);
-        Thread frontThread2 = new Thread(front_desk_employee_2);
-        frontThread.start();
-        frontThread2.start();
-
-        bellhop bellhop1 = new bellhop(1);
-        bellhop bellhop2 = new bellhop(2);
-        Thread bell1 = new Thread(bellhop1);
-        Thread bell2 = new Thread(bellhop2);
-        bell1.start();
-        bell2.start();
-
         Thread guest[] = new Thread[5];
+        
         for (int i = 0; i < 5; i++){
             guest[i] = new Thread(new guests(i));
         }
-
+        
+        frontThread.start();
+        bellhop bellhop1 = new bellhop(1);
+        Thread bell1 = new Thread(bellhop1);
+        bell1.start();
+        
         for (int i = 0; i < 5; i++){
             guest[i].start();
         }
@@ -35,12 +30,12 @@ public class Project2 {
         // try catch block to check for errors
         try {
             frontThread.join();
-            frontThread2.join();
             bell1.join();
-            bell2.join();
             for (int i = 0; i< 5; i++){
                 guest[i].join();
+                System.out.println("Guest " + i + " retires for the evening");
             }
+
 
         } catch (Exception e) {
             System.err.print("Thread not working");
@@ -56,12 +51,23 @@ public class Project2 {
         {
             this.id = id;
         }
-     
+        
         // runs the thread from main and spits out the id rn
         @Override
         public void run()
         {
-            System.out.println("Front desk employee " + id + " created.");
+            try{
+                for (int i = 0; i < 2; i++){
+                front_desk_employee[i].acquire();
+                System.out.println("Front desk employee " + i + " created.");
+            }
+            front_desk_employee[0].release();
+            front_desk_employee[1].release();
+            bellhop[0].release();
+            bellhop[1].release();
+            }catch(Exception e){
+                System.out.println(e);
+            }
         }
     }
 
@@ -76,7 +82,16 @@ public class Project2 {
         // runs thread and spits out id rn
         @Override
         public void run(){
-            System.out.println("Bellhop " + id + " created.");
+            try{
+                for (int j = 0; j < 2; j++){
+                bellhop[j].acquire();
+                System.out.println("Bellhop " + j + " created.");
+                }
+                bellhop[0].release();
+                guestSemaphore[0].release();
+            }catch(Exception e){
+                System.out.println(e);
+            }
         }
     }
 
@@ -90,7 +105,13 @@ public class Project2 {
 
         @Override
         public void run(){
-            System.out.println("Guest " + id + " created.");
+            try{
+                guestSemaphore[0].acquire();
+                System.out.println("Guest " + id + " created.");
+                guestSemaphore[0].release();
+            }catch(Exception e){
+                System.out.println(e);
+            }
         }
     }
 }
