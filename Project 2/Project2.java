@@ -1,5 +1,5 @@
 import java.util.concurrent.Semaphore;
-
+import java.util.Random;
 
 public class Project2 {
     // all semaphores
@@ -9,30 +9,45 @@ public class Project2 {
     public static void main(String[] args) {
         System.out.println("Simulation starts");
 
+        Random rand = new Random();
+        
         // runs front desk threads
         front_desk front_desk_employee_1 = new front_desk(1);
         Thread frontThread = new Thread(front_desk_employee_1);
         Thread guest[] = new Thread[5];
-        
-        for (int i = 0; i < 5; i++){
-            guest[i] = new Thread(new guests(i));
-        }
-        
+        Thread guestBag[] = new Thread[5];
         frontThread.start();
         bellhop bellhop1 = new bellhop(1);
         Thread bell1 = new Thread(bellhop1);
         bell1.start();
         
+        // creates guest threads and runs them
         for (int i = 0; i < 5; i++){
+            guest[i] = new Thread(new guests(i));
             guest[i].start();
         }
-
+        
+        // creating guest thread with bags
+        for(int i = 0; i < 5; i++){
+            int randBag = rand.nextInt(10);
+            guestBag[i] = new Thread(new guestBag(i, randBag));
+            guestBag[i].start();
+        }
+        
         // try catch block to check for errors
         try {
             frontThread.join();
             bell1.join();
-            for (int i = 0; i< 5; i++){
+            // guest threads join
+            for(int i = 0; i < 5; i++){
                 guest[i].join();
+            }
+            // guest bag thread joins
+            for(int i = 0; i < 5; i++){
+                guestBag[i].join();
+            }
+            // guest retire for the evening, therefore end of program
+            for (int i = 0; i< 5; i++){
                 System.out.println("Guest " + i + " retires for the evening");
             }
 
@@ -106,13 +121,38 @@ public class Project2 {
         @Override
         public void run(){
             try{
+                // guest are created
                 guestSemaphore[0].acquire();
                 System.out.println("Guest " + id + " created.");
                 guestSemaphore[0].release();
+                guestSemaphore[1].release();
             }catch(Exception e){
                 System.out.println(e);
             }
         }
     }
+
+    // guest bag that shows how many bags each guest has
+    public static class guestBag implements Runnable{
+        private int bag;
+        private int id;
+
+        public guestBag(int id, int bag){
+            this.id = id;
+            this.bag = bag;
+        }
+
+        @Override
+        public void run(){
+            try {
+                guestSemaphore[1].acquire();
+                System.out.println("Guest " + id + " enters hotel with " + bag + " bags");
+                guestSemaphore[1].release();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    }
+
 }
 
