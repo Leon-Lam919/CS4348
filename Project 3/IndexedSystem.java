@@ -270,7 +270,7 @@ public class IndexedSystem extends FileSystem {
         // Set the index block to free
         bitmap[start] = 0;
 
-        // Set every index in the index block to free inthe bitmap
+        // Set every index in the index block to free in the bitmap
         for (byte b : indices) {
             bitmap[(int)b] = 0;
         }
