@@ -1,5 +1,7 @@
 import java.util.concurrent.Semaphore;
 import java.util.Random;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Project2 {
     // all semaphores
@@ -7,6 +9,7 @@ public class Project2 {
     private static Semaphore bellhop[] = {new Semaphore(0), new Semaphore(0)};
     private static Semaphore guestSemaphore[] = {new Semaphore(0), new Semaphore(0)};
     public static void main(String[] args) {
+        final int NUMGUEST = 25;
         System.out.println("Simulation starts");
 
         Random rand = new Random();
@@ -15,7 +18,6 @@ public class Project2 {
         front_desk front_desk_employee_1 = new front_desk(1);
         Thread frontThread = new Thread(front_desk_employee_1);
         Thread guest[] = new Thread[5];
-        Thread guestBag[] = new Thread[5];
         frontThread.start();
         bellhop bellhop1 = new bellhop(1);
         Thread bell1 = new Thread(bellhop1);
@@ -23,16 +25,10 @@ public class Project2 {
         
         // creates guest threads and runs them
         for (int i = 0; i < 5; i++){
-            guest[i] = new Thread(new guests(i));
+            guest[i] = new Thread(new guests(i, rand.nextInt(10)));
             guest[i].start();
         }
         
-        // creating guest thread with bags
-        for(int i = 0; i < 5; i++){
-            int randBag = rand.nextInt(10);
-            guestBag[i] = new Thread(new guestBag(i, randBag));
-            guestBag[i].start();
-        }
         
         // try catch block to check for errors
         try {
@@ -42,14 +38,15 @@ public class Project2 {
             for(int i = 0; i < 5; i++){
                 guest[i].join();
             }
-            // guest bag thread joins
-            for(int i = 0; i < 5; i++){
-                guestBag[i].join();
-            }
             // guest retire for the evening, therefore end of program
             for (int i = 0; i< 5; i++){
                 System.out.println("Guest " + i + " retires for the evening");
             }
+
+            for(int i = 0; i < 5; i++){
+                System.out.println("Guest " + i + " joined");
+            }
+
 
 
         } catch (Exception e) {
@@ -60,11 +57,21 @@ public class Project2 {
     // front desk thread
     public static class front_desk implements Runnable{
         private int id;
+
+        front_desk(){}
   
         // first thread
         public front_desk( int id )
         {
             this.id = id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
         }
         
         // runs the thread from main and spits out the id rn
@@ -76,8 +83,10 @@ public class Project2 {
                 front_desk_employee[i].acquire();
                 System.out.println("Front desk employee " + i + " created.");
             }
+
             front_desk_employee[0].release();
             front_desk_employee[1].release();
+
             bellhop[0].release();
             bellhop[1].release();
             }catch(Exception e){
@@ -90,8 +99,18 @@ public class Project2 {
     public static class bellhop implements Runnable{
         private int id;
 
+        public bellhop(){}
+
         public bellhop(int id){
             this.id = id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
         }
 
         // runs thread and spits out id rn
@@ -102,7 +121,14 @@ public class Project2 {
                 bellhop[j].acquire();
                 System.out.println("Bellhop " + j + " created.");
                 }
+                guestSemaphore[0].release();
+                bellhop[0].acquire();
+                guests guest = new guests();
+                System.out.println("Bellhop " + getId() + " recieves bags from guest " + guest.getId());
                 bellhop[0].release();
+
+                bellhop[1].acquire();
+                System.out.println("bellhop "+ getId() + " recieves bags from guest " + guest.getId());
                 guestSemaphore[0].release();
             }catch(Exception e){
                 System.out.println(e);
@@ -113,9 +139,29 @@ public class Project2 {
     //guest thread
     public static class guests implements Runnable{
         private int id;
-
-        public guests(int id){
+        private int bags;
+        
+        public guests(){}
+        
+        public guests(int id, int bags){
             this.id = id;
+            this.bags = bags;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setBags(int bags) {
+            this.bags = bags;
+        }
+
+        public int getBags() {
+            return bags;
         }
 
         @Override
@@ -123,32 +169,20 @@ public class Project2 {
             try{
                 // guest are created
                 guestSemaphore[0].acquire();
-                System.out.println("Guest " + id + " created.");
+                System.out.println("Guest " + getId() + " created.");
                 guestSemaphore[0].release();
+                System.out.println("Guest " + getId() + " enters hotel with " + getBags() + " bags");
+
+                Queue<Integer> queue = new LinkedList<>();
+
+                // if bags are greater than 2, call first bellhop to get bags
+                if(getBags() > 2){
+                    queue.add(getId());
+                    bellhop[0].release();
+                }
+                front_desk_employee[0].release();
                 guestSemaphore[1].release();
             }catch(Exception e){
-                System.out.println(e);
-            }
-        }
-    }
-
-    // guest bag that shows how many bags each guest has
-    public static class guestBag implements Runnable{
-        private int bag;
-        private int id;
-
-        public guestBag(int id, int bag){
-            this.id = id;
-            this.bag = bag;
-        }
-
-        @Override
-        public void run(){
-            try {
-                guestSemaphore[1].acquire();
-                System.out.println("Guest " + id + " enters hotel with " + bag + " bags");
-                guestSemaphore[1].release();
-            } catch (Exception e) {
                 System.out.println(e);
             }
         }

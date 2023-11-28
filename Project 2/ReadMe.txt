@@ -1,0 +1,1 @@
+compile Project2.java. it contains all of the threads and all of the classes needed. It should run the simmulation
