@@ -2,8 +2,7 @@
     Leon Lam
     CS4348 Project 3
 
-    FileEntry class for project3, which contains a serializable class
-    with attributes relating to elements of the file allocation table
+    FileEntry class for project3
 */
 
 // Used for serializing and deserializing the class

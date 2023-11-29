@@ -2,12 +2,8 @@
     Leon Lam
     CS4348 Project 3
 
-    FileSystem class for project 3, which serves as a parent class for each
-    of the three types of file systems. Contains some methods which are 
-    universal to all file systems, and some methods which are overridden
-    by the child classes. This object is not a fully functional file system 
-    itself, it only provides a baseline for the child file systems.
-*/
+    FileSystem class for project 3
+    */
 
 // Used to serialize the file table object
 import java.io.ByteArrayOutputStream;

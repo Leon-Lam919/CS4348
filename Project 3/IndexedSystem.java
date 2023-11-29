@@ -2,11 +2,7 @@
     Leon Lam
     CS4348 Project 3
 
-    IndexedSystem class for project 3, which inherits from the 
-    generic FileSystem class, and overrides methods for the full functionality 
-    of the file system. Utilizes the indexed allocation method,
-    in which each file has a block dedicated to holding indices of 
-    blocks which actually contain file data
+    IndexedSystem class for project 3
 */
 
 // Used for serializing the file table

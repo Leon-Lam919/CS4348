@@ -2,11 +2,7 @@
     Leon Lam
     CS4348 Project 3
 
-    ChainedSystem class for project 3, which inherits from the 
-    generic FileSystem class, and overrides methods for the full functionality 
-    of the file system. Utilizes the chained allocation method,
-    in which each file block contains a pointer to the next block 
-    in the file
+    ChainedSystem class for project 3
 */
 
 // Used for serializing the file table

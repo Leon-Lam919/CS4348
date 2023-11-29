@@ -2,9 +2,7 @@
     Leon Lam
     CS4348 Project 3
 
-    UserInterface class for project 3, contains the main menu loop which
-    continuously prompts the user for input and invokes methods on the filesystem
-    to satisfy the user's requests.
+    UserInterface class for project 3
 */
 
 // Used for getting path of disk files

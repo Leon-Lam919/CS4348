@@ -2,9 +2,7 @@
     Leon Lam
     CS4348 Project 3
 
-    DiskDrive class for project 3, which contains only methods relating
-    to reading and writing to and from the main memory. Memory consists
-    of 256 blocks of 512 bytes each. 
+    DiskDrive class for project 3
 */
 
 public class DiskDrive {

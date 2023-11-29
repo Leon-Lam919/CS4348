@@ -2,10 +2,7 @@
     Leon Lam
     CS4348 Project 3
 
-    ContiguousSystem class for project 3, which inherits from the 
-    generic FileSystem class, and overrides methods for the full functionality
-    of the file system. Utilizes the contiguous allocation method,
-    in which each file is stored sequentially in memory.
+    ContiguousSystem class for project 3
 */
 
 // Used for serializing the file table

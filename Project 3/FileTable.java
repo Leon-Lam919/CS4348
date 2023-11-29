@@ -2,8 +2,7 @@
     Leon Lam
     CS4348 Project 3
 
-    FileTable class for project3, which contains a serializable class
-    with one attribute: an array of FileEntry objects
+    FileTable class for project3
 */
 
 // Used for serializing and deserializing the objects of this class
